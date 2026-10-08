@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Manual da Central · M&amp;F</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&family=Raleway:wght@400;500;600;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<style>
+/* Layout: faixa verde-profunda da marca no topo, índice à esquerda e leitura confortável à direita; tela de senha centralizada */
+:root{
+  --deep:#033838; --forest:#09533e; --green:#1a934d; --lime:#A3C642; --cream:#EFEADD;
+  --bg:#EFEADD; --surface:#F8F5EE; --ink:#033838; --ink-2:#4d6461; --rule:#dcd4c0; --chip:#e5dec9;
+  --code-bg:#022b2b; --code-ink:#e6efe9; --accent:#1a934d; --on-accent:#fff; --warn:#B91C1C;
+  --f-title:'Roboto',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-body:'Raleway',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-mono:ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#012424; --surface:#033838; --ink:#EFEADD; --ink-2:#a9bdb6; --rule:#0f4d4b; --chip:#08463f;
+  --code-bg:#011818; --accent:#A3C642; --on-accent:#033838; --warn:#f87171; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
+:focus-visible{outline:3px solid var(--lime);outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+button,input,textarea{font:inherit;color:inherit}
+.btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:999px;border:1.5px solid currentColor;background:transparent;font-weight:700;font-size:14px;cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.small{height:32px;padding:0 12px;font-size:12.5px}
+.btn.danger{color:var(--warn)}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* Tela de senha */
+#tela-senha{min-height:100%;display:flex;align-items:center;justify-content:center;padding:32px 16px;background:var(--deep)}
+.cartao{width:100%;max-width:400px;background:var(--cream);color:#033838;border-radius:18px;padding:28px}
+.cartao .marca{font:700 11px/1 var(--f-body);letter-spacing:.2em;text-transform:uppercase;color:var(--green)}
+.cartao h1{font:900 26px/1.1 var(--f-title);letter-spacing:.04em;text-transform:uppercase;margin:8px 0 6px}
+.cartao p{margin:0 0 18px;color:#4d6461;font-size:14.5px}
+.cartao label{display:block;font-weight:700;font-size:12.5px;margin-bottom:6px}
+.cartao input{width:100%;height:46px;border-radius:10px;border:1.5px solid #cfc7b2;background:#fff;padding:0 12px;color:#033838}
+.cartao .btn.primary{width:100%;justify-content:center;margin-top:14px;height:46px;background:#09533e;border-color:#09533e;color:#fff}
+.msg{font-size:13.5px;margin-top:10px;min-height:1.2em}
+.msg.erro{color:#B91C1C}
+
+/* App */
+#app{min-height:100%;display:flex;flex-direction:column}
+.topo{background:var(--deep);color:var(--cream);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.topo .in{max-width:1200px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.topo h1{font:900 17px/1 var(--f-title);letter-spacing:.08em;text-transform:uppercase;color:var(--lime);margin:0;flex:1;min-width:180px}
+.topo h1 small{display:block;font:500 11.5px/1.4 var(--f-body);letter-spacing:0;text-transform:none;color:var(--cream);opacity:.7;margin-top:4px}
+.topo .btn{color:var(--cream);border-color:#2b6f69;height:36px}
+.topo input[type=search]{height:36px;border-radius:999px;border:1px solid #2b6f69;background:#022b2b;color:var(--cream);padding:0 14px;width:220px;max-width:100%}
+.aviso-edicao{background:var(--lime);color:#033838;font-weight:700;font-size:13px}
+.aviso-edicao .in{max-width:1200px;margin:0 auto;padding:8px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.corpo{flex:1;max-width:1200px;width:100%;margin:0 auto;padding:24px 16px 64px;display:grid;grid-template-columns:240px minmax(0,1fr);gap:32px;align-content:start;align-items:start}
+nav.indice{position:sticky;top:84px;align-self:start;display:flex;flex-direction:column;gap:2px}
+nav.indice button{all:unset;cursor:pointer;padding:8px 12px;border-radius:10px;font-weight:600;font-size:14.5px;color:var(--ink-2)}
+nav.indice button:hover{background:var(--chip);color:var(--ink)}
+nav.indice button[aria-current=true]{background:var(--ink);color:var(--bg)}
+nav.indice .acoes{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+main.leitura{min-width:0;background:var(--surface);border:1px solid var(--rule);border-radius:16px;padding:28px clamp(18px,4vw,40px)}
+.md{max-width:78ch}
+.md h1{font:900 30px/1.1 var(--f-title);letter-spacing:.02em;margin:0 0 18px}
+.md h2{font:700 21px/1.25 var(--f-title);margin:32px 0 10px;padding-top:14px;border-top:1px solid var(--rule)}
+.md h3{font:700 17px/1.3 var(--f-title);margin:24px 0 8px}
+.md p,.md li{color:var(--ink)}
+.md a{color:var(--accent)}
+.md code{font:13px/1.5 var(--f-mono);background:var(--chip);padding:1px 6px;border-radius:5px}
+.md pre{position:relative;background:var(--code-bg);color:var(--code-ink);padding:16px;border-radius:12px;overflow:auto;max-height:520px}
+.md pre code{background:none;padding:0;color:inherit;font-size:12.5px}
+.md pre .copiar{position:sticky;float:right;top:0;right:0;margin:-6px -6px 6px 6px;height:28px;padding:0 10px;border-radius:999px;border:1px solid #2b6f69;background:#033838;color:#EFEADD;font:700 12px var(--f-body);cursor:pointer}
+.md table{border-collapse:collapse;width:100%;font-size:14px;display:block;overflow-x:auto}
+.md th,.md td{border:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top}
+.md th{background:var(--chip)}
+.md blockquote{margin:16px 0;padding:10px 16px;border-left:4px solid var(--lime);background:var(--chip);border-radius:6px}
+.md input[type=checkbox]{accent-color:var(--green)}
+.md li:has(> input[type=checkbox]){list-style:none;margin-left:-1.3em}
+.resultados h2{font:700 15px var(--f-title);letter-spacing:.1em;text-transform:uppercase;margin:0 0 12px}
+.resultados button{all:unset;cursor:pointer;display:block;padding:12px 14px;border:1px solid var(--rule);border-radius:12px;margin-bottom:8px;width:100%;box-sizing:border-box}
+.resultados button:hover{border-color:var(--accent)}
+.resultados b{display:block;font-family:var(--f-title)}
+.resultados span{font-size:13.5px;color:var(--ink-2)}
+mark{background:var(--lime);color:#033838;border-radius:3px;padding:0 2px}
+
+/* Edição */
+.editor{display:flex;flex-direction:column;gap:12px}
+.editor label{font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.08em}
+.editor input[type=text]{height:42px;border-radius:10px;border:1.5px solid var(--rule);background:var(--bg);padding:0 12px;font:700 18px var(--f-title)}
+.editor textarea{min-height:60vh;border-radius:12px;border:1.5px solid var(--rule);background:var(--bg);padding:14px;font:13.5px/1.55 var(--f-mono);resize:vertical}
+.linha{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.confirma{font-size:13.5px;color:var(--warn);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.painel-salvar{border:1.5px solid var(--accent);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;background:var(--bg)}
+.painel-salvar input{height:42px;border-radius:10px;border:1.5px solid var(--rule);background:var(--surface);padding:0 12px;width:100%;max-width:360px}
+.painel-salvar ol{margin:0;padding-left:20px}
+
+@media (max-width:820px){
+  .corpo{grid-template-columns:1fr;gap:16px}
+  nav.indice{position:static;flex-direction:row;flex-wrap:wrap}
+  nav.indice button{padding:6px 10px;font-size:13.5px;background:var(--chip)}
+  .topo input[type=search]{width:100%}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<section id="tela-senha" aria-labelledby="t-senha">
+  <form class="cartao" id="form-senha" autocomplete="off">
+    <div class="marca">Meireles &amp; Freitas · Central de Sistemas</div>
+    <h1 id="t-senha">Manual da Central</h1>
+    <p>Documentação, acessos, pendências e SQLs dos sistemas. Conteúdo protegido: só abre com a senha.</p>
+    <label for="senha">Senha</label>
+    <input id="senha" type="password" autocomplete="current-password" required>
+    <button class="btn primary" type="submit" id="btn-abrir">Abrir manual</button>
+    <div class="msg" id="msg-senha" role="status"></div>
+  </form>
+</section>
+
+<div id="app" hidden>
+  <header class="topo">
+    <div class="in">
+      <h1>Manual da Central<small id="versao"></small></h1>
+      <input type="search" id="busca" placeholder="Buscar no manual" aria-label="Buscar no manual">
+      <button class="btn small" id="btn-editar" type="button">Editar</button>
+      <button class="btn small" id="btn-bloquear" type="button">Bloquear</button>
+    </div>
+  </header>
+  <div class="aviso-edicao" id="aviso-edicao" hidden>
+    <div class="in">
+      <span id="txt-edicao">Modo edição. As mudanças só valem depois de salvar uma nova versão e subir no GitHub.</span>
+      <button class="btn small" id="btn-abrir-salvar" type="button" style="border-color:#033838">Salvar nova versão</button>
+      <button class="btn small" id="btn-sair-edicao" type="button" style="border-color:#033838">Sair da edição</button>
+    </div>
+  </div>
+  <div class="corpo">
+    <nav class="indice" id="indice" aria-label="Seções"></nav>
+    <main class="leitura" id="leitura" tabindex="-1"></main>
+  </div>
+</div>
+
+<script src="dados.js"></script>
+<script>
+(function () {
+  'use strict';
+  var ITER = 600000;
+  var INATIVO_MS = 30 * 60 * 1000;
+  var estado = null;        // conteúdo aberto (só em memória)
+  var senhaAtual = null;    // necessária para salvar nova versão
+  var atual = 'inicio';
+  var editando = false, alterado = false, timer = null;
+
+  var $ = function (id) { return document.getElementById(id); };
+  var te = new TextEncoder(), td = new TextDecoder();
+  function b64(buf) { var s = '', a = new Uint8Array(buf); for (var i = 0; i < a.length; i++) s += String.fromCharCode(a[i]); return btoa(s); }
+  function deb64(t) { var s = atob(t), a = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); return a; }
+
+  async function chave(senha, sal, iter) {
+    var base = await crypto.subtle.importKey('raw', te.encode(senha), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: sal, iterations: iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+  }
+  async function abrir(senha) {
+    var c = window.MANUAL_CIFRADO;
+    if (!c) throw new Error('sem-dados');
+    var k = await chave(senha, deb64(c.salt), c.iter || ITER);
+    var claro = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: deb64(c.iv) }, k, deb64(c.ct));
+    return JSON.parse(td.decode(claro));
+  }
+  async function fechar(dados, senha) {
+    var sal = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+    var k = await chave(senha, sal, ITER);
+    var ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, k, te.encode(JSON.stringify(dados)));
+    return { v: 1, kdf: 'PBKDF2-SHA256', iter: ITER, salt: b64(sal), iv: b64(iv), ct: b64(ct) };
+  }
+
+  // ── Senha ────────────────────────────────────────────────────────────────
+  $('form-senha').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var msg = $('msg-senha'), btn = $('btn-abrir');
+    msg.className = 'msg'; msg.textContent = 'Abrindo…'; btn.disabled = true;
+    try {
+      var senha = $('senha').value;
+      estado = await abrir(senha);
+      senhaAtual = senha;
+      $('senha').value = ''; msg.textContent = '';
+      var h = (location.hash || '').replace('#', '');
+      atual = estado.secoes.some(function (s) { return s.id === h; }) ? h : estado.secoes[0].id;
+      $('tela-senha').hidden = true; $('app').hidden = false;
+      render(); reiniciarTimer();
+    } catch (err) {
+      msg.className = 'msg erro';
+      msg.textContent = err && err.message === 'sem-dados' ? 'O arquivo dados.js não carregou. Confira se ele está na pasta central/manual/.' : 'Senha incorreta.';
+    }
+    btn.disabled = false;
+  });
+
+  var pedirConfirmacao = false;
+  function bloquear(origem) {
+    if (origem !== 'tempo' && editando && alterado && !pedirConfirmacao) {
+      pedirConfirmacao = true;
+      $('txt-edicao').textContent = 'Há mudanças não salvas. Clique em Bloquear de novo para descartar, ou salve uma nova versão antes.';
+      setTimeout(function () { pedirConfirmacao = false; }, 8000);
+      return;
+    }
+    pedirConfirmacao = false;
+    estado = null; senhaAtual = null; editando = false; alterado = false;
+    $('leitura').innerHTML = ''; $('indice').innerHTML = '';
+    $('app').hidden = true; $('tela-senha').hidden = false; $('aviso-edicao').hidden = true;
+    $('senha').focus();
+  }
+  $('btn-bloquear').addEventListener('click', function () { bloquear('botao'); });
+  function reiniciarTimer() { clearTimeout(timer); if (estado) timer = setTimeout(function () { if (!(editando && alterado)) bloquear('tempo'); }, INATIVO_MS); }
+  ['mousedown', 'keydown', 'touchstart', 'scroll'].forEach(function (ev) { window.addEventListener(ev, reiniciarTimer, { passive: true }); });
+  window.addEventListener('beforeunload', function (e) { if (editando && alterado) { e.preventDefault(); e.returnValue = ''; } });
+
+  // ── Leitura ──────────────────────────────────────────────────────────────
+  function md(texto) {
+    if (window.marked) return window.marked.parse(texto, { gfm: true, breaks: false });
+    var pre = document.createElement('pre'); pre.textContent = texto; return pre.outerHTML;
+  }
+  function secao(id) { return estado.secoes.find(function (s) { return s.id === id; }); }
+
+  function render() {
+    $('versao').textContent = 'Versão ' + estado.versao + ' · atualizada em ' + formatarData(estado.atualizado_em) + (estado.atualizado_por ? ' por ' + estado.atualizado_por : '');
+    var nav = $('indice'); nav.innerHTML = '';
+    estado.secoes.forEach(function (s) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = s.titulo;
+      b.setAttribute('aria-current', s.id === atual ? 'true' : 'false');
+      b.addEventListener('click', function () { atual = s.id; $('busca').value = ''; history.replaceState(null, '', '#' + s.id); render(); $('leitura').focus(); window.scrollTo(0, 0); });
+      nav.appendChild(b);
+    });
+    if (editando) {
+      var acoes = document.createElement('div'); acoes.className = 'acoes';
+      acoes.appendChild(botao('+ Seção', novaSecao));
+      nav.appendChild(acoes);
+    }
+    $('aviso-edicao').hidden = !editando;
+    $('btn-editar').hidden = editando;
+    $('txt-edicao').textContent = alterado ? 'Há mudanças não salvas. Salve uma nova versão e suba o arquivo no GitHub.' : 'Modo edição. As mudanças só valem depois de salvar uma nova versão e subir no GitHub.';
+    if (editando) renderEditor(); else renderLeitura();
+  }
+  function renderLeitura() {
+    var s = secao(atual) || estado.secoes[0];
+    var el = $('leitura');
+    el.innerHTML = '<article class="md">' + md(s.md) + '</article>';
+    el.querySelectorAll('pre').forEach(function (pre) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'copiar'; b.textContent = 'Copiar';
+      b.addEventListener('click', function () {
+        var txt = pre.querySelector('code') ? pre.querySelector('code').textContent : pre.textContent.replace(/^Copiar/, '');
+        (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { b.textContent = 'Copiado'; setTimeout(function () { b.textContent = 'Copiar'; }, 1500); })
+          .catch(function () { var r = document.createRange(); r.selectNodeContents(pre); var sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); });
+      });
+      pre.insertBefore(b, pre.firstChild);
+    });
+    el.querySelectorAll('a[href^="http"]').forEach(function (a) { a.target = '_blank'; a.rel = 'noopener'; });
+  }
+
+  // ── Busca ────────────────────────────────────────────────────────────────
+  $('busca').addEventListener('input', function () {
+    var q = this.value.trim().toLowerCase();
+    if (!q) { render(); return; }
+    var el = $('leitura'), achados = [];
+    estado.secoes.forEach(function (s) {
+      var t = s.md, i = t.toLowerCase().indexOf(q);
+      if (i >= 0 || s.titulo.toLowerCase().indexOf(q) >= 0) {
+        var ini = Math.max(0, i - 60), trecho = i >= 0 ? t.slice(ini, i + q.length + 80).replace(/[#*`|>\-\[\]]/g, ' ') : '';
+        achados.push({ s: s, trecho: trecho });
+      }
+    });
+    el.innerHTML = '<div class="resultados"><h2>' + achados.length + ' seção(ões) com “' + escapar(this.value.trim()) + '”</h2></div>';
+    var box = el.firstChild;
+    achados.forEach(function (a) {
+      var b = document.createElement('button'); b.type = 'button';
+      b.innerHTML = '<b>' + escapar(a.s.titulo) + '</b><span>' + destacar(escapar(a.trecho), q) + '</span>';
+      b.addEventListener('click', function () { atual = a.s.id; $('busca').value = ''; render(); });
+      box.appendChild(b);
+    });
+  });
+  function escapar(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function destacar(html, q) { var re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'); return html.replace(re, function (m) { return '<mark>' + m + '</mark>'; }); }
+  function formatarData(iso) { var p = String(iso || '').split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : iso; }
+  function botao(txt, fn, cls) { var b = document.createElement('button'); b.type = 'button'; b.className = 'btn small ' + (cls || ''); b.textContent = txt; b.addEventListener('click', fn); return b; }
+
+  // ── Edição ───────────────────────────────────────────────────────────────
+  $('btn-editar').addEventListener('click', function () { editando = true; $('busca').value = ''; render(); });
+  $('btn-sair-edicao').addEventListener('click', function () { editando = false; render(); });
+  $('btn-abrir-salvar').addEventListener('click', function () { editando = true; renderSalvar(); });
+
+  function renderEditor() {
+    var s = secao(atual) || estado.secoes[0];
+    var el = $('leitura'); el.innerHTML = '';
+    var box = document.createElement('div'); box.className = 'editor';
+    box.innerHTML = '<label for="ed-titulo">Título da seção</label><input type="text" id="ed-titulo"><label for="ed-texto">Conteúdo (Markdown)</label><textarea id="ed-texto" spellcheck="true"></textarea>';
+    el.appendChild(box);
+    $('ed-titulo').value = s.titulo; $('ed-texto').value = s.md;
+    $('ed-titulo').addEventListener('input', function () { s.titulo = this.value; marcar(); var b = $('indice').querySelector('[aria-current=true]'); if (b) b.textContent = this.value; });
+    $('ed-texto').addEventListener('input', function () { s.md = this.value; marcar(); });
+    var linha = document.createElement('div'); linha.className = 'linha';
+    var idx = estado.secoes.indexOf(s);
+    linha.appendChild(botao('Ver como fica', function () { var prev = el.querySelector('.previa'); if (prev) { prev.remove(); return; } var d = document.createElement('div'); d.className = 'previa md'; d.style.cssText = 'border-top:1px solid var(--rule);padding-top:16px'; d.innerHTML = md(s.md); el.appendChild(d); }));
+    if (idx > 0) linha.appendChild(botao('↑ Subir', function () { mover(idx, -1); }));
+    if (idx < estado.secoes.length - 1) linha.appendChild(botao('↓ Descer', function () { mover(idx, 1); }));
+    var apagar = botao('Apagar seção', function () {
+      var c = document.createElement('span'); c.className = 'confirma';
+      c.innerHTML = 'Apagar “' + escapar(s.titulo) + '”? ';
+      c.appendChild(botao('Sim, apagar', function () { estado.secoes.splice(idx, 1); atual = (estado.secoes[Math.max(0, idx - 1)] || {}).id; marcar(); render(); }, 'danger'));
+      c.appendChild(botao('Cancelar', function () { c.replaceWith(apagar); }));
+      apagar.replaceWith(c);
+    }, 'danger');
+    if (estado.secoes.length > 1) linha.appendChild(apagar);
+    box.appendChild(linha);
+  }
+  function mover(i, d) { var a = estado.secoes; var t = a[i]; a[i] = a[i + d]; a[i + d] = t; marcar(); render(); }
+  function novaSecao() {
+    var id = 'secao-' + Date.now().toString(36);
+    estado.secoes.push({ id: id, titulo: 'Nova seção', md: '# Nova seção\n\nEscreva aqui.' });
+    atual = id; marcar(); render();
+  }
+  function marcar() { if (!alterado) { alterado = true; $('txt-edicao').textContent = 'Há mudanças não salvas. Salve uma nova versão e suba o arquivo no GitHub.'; } }
+
+  function renderSalvar() {
+    var el = $('leitura'); el.innerHTML = '';
+    var p = document.createElement('div'); p.className = 'painel-salvar';
+    p.innerHTML =
+      '<h2 style="margin:0;font:700 20px var(--f-title)">Salvar nova versão</h2>' +
+      '<p style="margin:0;color:var(--ink-2)">Gera um arquivo <b>dados.js</b> novo, criptografado. Ele só passa a valer depois de subir no GitHub.</p>' +
+      '<label for="sv-nome"><b>Seu nome</b></label><input id="sv-nome" type="text" autocomplete="name">' +
+      '<label for="sv-senha"><b>Nova senha</b> (deixe em branco para manter a atual)</label><input id="sv-senha" type="password" autocomplete="new-password">' +
+      '<label for="sv-senha2"><b>Repita a nova senha</b></label><input id="sv-senha2" type="password" autocomplete="new-password">' +
+      '<div class="msg" id="sv-msg" role="status"></div>' +
+      '<div class="linha"><button class="btn primary" type="button" id="sv-gerar">Gerar dados.js</button><button class="btn" type="button" id="sv-voltar">Voltar à edição</button></div>' +
+      '<ol id="sv-passos" hidden><li>O arquivo <b>dados.js</b> foi baixado.</li><li>No GitHub: repositório → pasta <b>central/manual/</b> → <b>Add file → Upload files</b> → arraste o <b>dados.js</b> → <b>Commit changes</b>.</li><li>Em 1–2 minutos a nova versão está no ar. Se trocou a senha, avise quem usa o manual.</li></ol>';
+    el.appendChild(p);
+    $('sv-nome').value = estado.atualizado_por || '';
+    $('sv-voltar').addEventListener('click', function () { render(); });
+    $('sv-gerar').addEventListener('click', async function () {
+      var m = $('sv-msg'); m.className = 'msg';
+      var nova = $('sv-senha').value, nova2 = $('sv-senha2').value;
+      if (nova || nova2) {
+        if (nova !== nova2) { m.className = 'msg erro'; m.textContent = 'As duas senhas não são iguais.'; return; }
+        if (nova.length < 12) { m.className = 'msg erro'; m.textContent = 'Use pelo menos 12 caracteres na senha nova.'; return; }
+      }
+      m.textContent = 'Criptografando…';
+      var hoje = new Date(); var iso = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0') + '-' + String(hoje.getDate()).padStart(2, '0');
+      var dados = JSON.parse(JSON.stringify(estado));
+      dados.versao = (estado.versao || 0) + 1; dados.atualizado_em = iso; dados.atualizado_por = $('sv-nome').value.trim();
+      var senhaUsar = nova || senhaAtual;
+      var cif = await fechar(dados, senhaUsar);
+      var conteudo = '// Manual da Central · conteúdo criptografado (AES-256-GCM). Não edite à mão: use o botão Editar do manual.\nwindow.MANUAL_CIFRADO = ' + JSON.stringify(cif) + ';\n';
+      var url = URL.createObjectURL(new Blob([conteudo], { type: 'text/javascript' }));
+      var a = document.createElement('a'); a.href = url; a.download = 'dados.js'; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+      estado = dados; senhaAtual = senhaUsar; alterado = false;
+      $('versao').textContent = 'Versão ' + estado.versao + ' · atualizada em ' + formatarData(estado.atualizado_em) + (estado.atualizado_por ? ' por ' + estado.atualizado_por : '');
+      $('txt-edicao').textContent = 'Versão ' + estado.versao + ' gerada. Falta subir o dados.js no GitHub.';
+      m.textContent = ''; $('sv-passos').hidden = false; $('sv-senha').value = ''; $('sv-senha2').value = '';
+    });
+  }
+})();
+</script>
+</body>
+</html>
