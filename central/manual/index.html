@@ -70,7 +70,7 @@ main.leitura{min-width:0;background:var(--surface);border:1px solid var(--rule);
 .md h2{font:700 21px/1.25 var(--f-title);margin:32px 0 10px;padding-top:14px;border-top:1px solid var(--rule)}
 .md h3{font:700 17px/1.3 var(--f-title);margin:24px 0 8px}
 .md p,.md li{color:var(--ink)}
-.md a{color:var(--accent)}
+.md a{color:var(--accent);font-weight:600;text-decoration:underline;text-underline-offset:2px}
 .md code{font:13px/1.5 var(--f-mono);background:var(--chip);padding:1px 6px;border-radius:5px}
 .md pre{position:relative;background:var(--code-bg);color:var(--code-ink);padding:16px;border-radius:12px;overflow:auto;max-height:520px}
 .md pre code{background:none;padding:0;color:inherit;font-size:12.5px}
@@ -231,7 +231,7 @@ mark{background:var(--lime);color:#033838;border-radius:3px;padding:0 2px}
     estado.secoes.forEach(function (s) {
       var b = document.createElement('button'); b.type = 'button'; b.textContent = s.titulo;
       b.setAttribute('aria-current', s.id === atual ? 'true' : 'false');
-      b.addEventListener('click', function () { atual = s.id; $('busca').value = ''; history.replaceState(null, '', '#' + s.id); render(); $('leitura').focus(); window.scrollTo(0, 0); });
+      b.addEventListener('click', function () { irPara(s.id); });
       nav.appendChild(b);
     });
     if (editando) {
@@ -258,6 +258,16 @@ mark{background:var(--lime);color:#033838;border-radius:3px;padding:0 2px}
       pre.insertBefore(b, pre.firstChild);
     });
     el.querySelectorAll('a[href^="http"]').forEach(function (a) { a.target = '_blank'; a.rel = 'noopener'; });
+    // Links entre seções: [Pendências](#pendencias) abre a seção no próprio Manual
+    el.querySelectorAll('a[href^="#"]').forEach(function (a) {
+      var id = a.getAttribute('href').slice(1);
+      if (!secao(id)) return;
+      a.addEventListener('click', function (e) { e.preventDefault(); irPara(id); });
+    });
+  }
+  function irPara(id) {
+    atual = id; $('busca').value = ''; history.replaceState(null, '', '#' + id);
+    render(); $('leitura').focus(); window.scrollTo(0, 0);
   }
 
   // ── Busca ────────────────────────────────────────────────────────────────
